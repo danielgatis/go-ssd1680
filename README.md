@@ -33,6 +33,7 @@ go get github.com/danielgatis/go-ssd1680
 package main
 
 import (
+    "image"
     "log"
 
     "github.com/danielgatis/go-ssd1680/pkg/display"
@@ -79,7 +80,7 @@ func main() {
         "Go Library",
     })
 
-    if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), textRenderer.Bounds().Min); err != nil {
+    if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), image.Point{}); err != nil {
         log.Fatal(err)
     }
 }
@@ -112,6 +113,12 @@ sudo raspi-config
 SSD1680 e-paper display driver with SPI support.
 
 ```go
+// Draw draws src, from sp, into r of the display, then refreshes
+dev.Draw(r, src, image.Point{})
+
+// Or set pixels in the buffer and show it: true is black
+dev.SetPixel(10, 10, true)
+
 // Full refresh: ~2s, the panel flashes, no ghosting
 dev.Update()
 
@@ -126,7 +133,7 @@ dev, _ := display.NewSSD1680SPI(bus, dc, rst, nil, busy, &display.Options{
     FullRefreshEvery: 60,
 })
 
-// Deep sleep (and power off, with a power pin). The next refresh wakes it.
+// Deep sleep (and power off, with a power pin). The next update wakes it.
 dev.Halt()
 ```
 

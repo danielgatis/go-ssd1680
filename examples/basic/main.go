@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image"
 	"log"
 	"os"
 
@@ -68,7 +69,7 @@ func main() {
 	})
 
 	// Draw the text: a full refresh, then the image stays with no power
-	if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), textRenderer.Bounds().Min); err != nil {
+	if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), image.Point{}); err != nil {
 		log.Fatal(err)
 	}
 }

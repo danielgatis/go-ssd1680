@@ -1,6 +1,7 @@
 package main
 
 import (
+	"image"
 	"log"
 	"os"
 	"os/signal"
@@ -63,7 +64,7 @@ func main() {
 			now.Format("Mon, 02 Jan 2006"),
 		})
 
-		if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), textRenderer.Bounds().Min); err != nil {
+		if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), image.Point{}); err != nil {
 			log.Fatal(err)
 		}
 

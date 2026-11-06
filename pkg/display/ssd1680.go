@@ -319,19 +319,10 @@ func (d *SSD1680) refresh(mode byte) error {
 	return d.waitBusy()
 }
 
-// wakeIfAsleep brings the panel back from Halt before a refresh
-func (d *SSD1680) wakeIfAsleep() error {
-	if !d.asleep {
-		return nil
-	}
-
-	return d.Wake()
-}
-
-// Update shows the buffer with a full refresh: about 2s, the panel flashes,
-// and no ghosting is left.
+// Update shows the buffer with a full refresh, waking the panel from Halt:
+// about 2s, the panel flashes, and no ghosting is left.
 func (d *SSD1680) Update() error {
-	if err := d.wakeIfAsleep(); err != nil {
+	if err := d.Wake(); err != nil {
 		return err
 	}
 
@@ -363,7 +354,7 @@ func (d *SSD1680) Update() error {
 // flashing, but each one leaves some ghosting that only a full refresh clears.
 // It runs a full refresh instead when the panel holds no base image yet.
 func (d *SSD1680) UpdatePartial() error {
-	if err := d.wakeIfAsleep(); err != nil {
+	if err := d.Wake(); err != nil {
 		return err
 	}
 
@@ -403,7 +394,8 @@ func (d *SSD1680) UpdatePartial() error {
 	return nil
 }
 
-// setPixel sets a pixel in the buffer, in rotated coordinates
+// setPixel sets a pixel in the buffer, in rotated coordinates. A set bit is
+// white.
 func (d *SSD1680) setPixel(x, y int, black bool) {
 	if x < 0 || x >= d.rect.Dx() || y < 0 || y >= d.rect.Dy() {
 		return
@@ -422,7 +414,6 @@ func (d *SSD1680) setPixel(x, y int, black bool) {
 	index := ny*d.stride + nx/8
 	mask := byte(0x80) >> (nx % 8)
 
-	// A set bit is white
 	if black {
 		d.buffer[index] &^= mask
 	} else {
@@ -488,8 +479,9 @@ func (d *SSD1680) Wake() error {
 	return nil
 }
 
-// Draw implements display.Drawer. It refreshes as Options.FullRefreshEvery
-// says: partially, with a full refresh every N draws.
+// Draw implements display.Drawer: it draws src, from sp, into r of the
+// display, then refreshes as Options.FullRefreshEvery says: partially, with a
+// full refresh every N draws.
 func (d *SSD1680) Draw(r image.Rectangle, src image.Image, sp image.Point) error {
 	r = r.Intersect(d.rect)
 
