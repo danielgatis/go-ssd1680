@@ -160,6 +160,15 @@ renderer, _ := text.NewRenderer("path/to/font.bdf", &text.Config{
     Height:    122,
     LineCount: 6,
 })
+
+// Or with any font.Face, such as a TrueType font: the examples use the Go font
+f, _ := opentype.Parse(gomedium.TTF)
+face, _ := opentype.NewFace(f, &opentype.FaceOptions{Size: 22, DPI: 72})
+renderer, _ := text.NewRendererWithFace(face, &text.Config{
+    Width:     250,
+    Height:    122,
+    LineCount: 4,
+})
 ```
 
 ## Examples

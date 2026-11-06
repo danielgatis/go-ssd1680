@@ -8,6 +8,9 @@ import (
 	"github.com/danielgatis/go-ssd1680/pkg/display"
 	"github.com/danielgatis/go-ssd1680/pkg/text"
 
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/gofont/gomedium"
+	"golang.org/x/image/font/opentype"
 	"periph.io/x/conn/v3/gpio"
 	"periph.io/x/conn/v3/gpio/gpioreg"
 	"periph.io/x/conn/v3/spi/spireg"
@@ -51,12 +54,12 @@ func main() {
 	}
 	defer dev.Halt()
 
-	// Create text renderer with embedded font
-	textRenderer, err := text.NewRendererWithEmbeddedFont(&text.Config{
+	// Create text renderer with the Go font: e-paper has the resolution for a
+	// smooth face, where the 3x5 embedded font needs text.Config.Scale
+	textRenderer, err := text.NewRendererWithFace(goFace(22), &text.Config{
 		Width:     250,
 		Height:    122,
 		LineCount: 4,
-		Scale:     3, // the embedded font is 3x5 px
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -73,6 +76,21 @@ func main() {
 	if err := dev.Draw(textRenderer.Bounds(), textRenderer.Image(), image.Point{}); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// goFace opens the Go font, medium weight, at size pixels
+func goFace(size float64) font.Face {
+	f, err := opentype.Parse(gomedium.TTF)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	face, err := opentype.NewFace(f, &opentype.FaceOptions{Size: size, DPI: 72, Hinting: font.HintingFull})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return face
 }
 
 func mustPin(name string) gpio.PinIO {
