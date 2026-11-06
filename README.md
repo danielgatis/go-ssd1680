@@ -61,7 +61,7 @@ func main() {
     dev, _ := display.NewSSD1680SPI(bus, dc, rst, nil, busy, &display.Options{
         Width:    122,
         Height:   250,
-        Rotation: display.Rotate90, // landscape: 250x122
+        Rotation: display.Rotate270, // landscape: 250x122
         Power:    gpioreg.ByName("GPIO18"),
     })
     defer dev.Halt()
@@ -70,7 +70,8 @@ func main() {
     textRenderer, _ := text.NewRendererWithEmbeddedFont(&text.Config{
         Width:     250,
         Height:    122,
-        LineCount: 6,
+        LineCount: 4,
+        Scale:     3, // the embedded font is 3x5 px
     })
 
     // Set text and display
@@ -150,6 +151,7 @@ renderer, _ := text.NewRendererWithEmbeddedFont(&text.Config{
     Width:     250,
     Height:    122,
     LineCount: 6,
+    Scale:     3, // each font pixel becomes a sharp 3x3 block
 })
 
 // Or with custom BDF font file

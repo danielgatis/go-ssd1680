@@ -32,7 +32,7 @@ func main() {
 	dev, err := display.NewSSD1680SPI(bus, mustPin("GPIO25"), mustPin("GPIO17"), nil, mustPin("GPIO24"), &display.Options{
 		Width:            122,
 		Height:           250,
-		Rotation:         display.Rotate90,
+		Rotation:         display.Rotate270,
 		FullRefreshEvery: 60,
 		Power:            gpioreg.ByName("GPIO18"),
 	})
@@ -45,6 +45,7 @@ func main() {
 		Width:     250,
 		Height:    122,
 		LineCount: 4,
+		Scale:     3, // the embedded font is 3x5 px
 	})
 	if err != nil {
 		log.Fatal(err)

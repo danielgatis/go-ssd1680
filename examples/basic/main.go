@@ -43,7 +43,7 @@ func main() {
 	dev, err := display.NewSSD1680SPI(bus, dc, rst, nil, busy, &display.Options{
 		Width:    122,
 		Height:   250,
-		Rotation: display.Rotate90,
+		Rotation: display.Rotate270,
 		Power:    pwr,
 	})
 	if err != nil {
@@ -55,7 +55,8 @@ func main() {
 	textRenderer, err := text.NewRendererWithEmbeddedFont(&text.Config{
 		Width:     250,
 		Height:    122,
-		LineCount: 6,
+		LineCount: 4,
+		Scale:     3, // the embedded font is 3x5 px
 	})
 	if err != nil {
 		log.Fatal(err)

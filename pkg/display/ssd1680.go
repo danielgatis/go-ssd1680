@@ -38,11 +38,13 @@ type Rotation int
 const (
 	// Rotate0 is the native portrait frame: Width x Height.
 	Rotate0 Rotation = iota
-	// Rotate90 is landscape, the orientation of Waveshare's examples.
+	// Rotate90 is landscape, the image turned a quarter counterclockwise on
+	// the native frame.
 	Rotate90
 	// Rotate180 is portrait, upside down.
 	Rotate180
-	// Rotate270 is landscape, upside down.
+	// Rotate270 is landscape, the image turned a quarter clockwise on the
+	// native frame: right side up on the 2.13inch HAT mounted on a Pi.
 	Rotate270
 )
 
